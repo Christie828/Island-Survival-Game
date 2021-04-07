@@ -1,0 +1,179 @@
+#include <iostream>
+#include <windows.h>
+#include <string>
+using namespace std;
+
+//Function Declarations
+void Intro();
+void HUD();
+int Choices();
+
+//Variable Declarations
+string name;
+int health = 0;
+int maxHealth = 0;
+int energy = 0;
+int maxEnergy = 0;
+int water = 0;
+int maxWater = 0;
+int food = 0;
+int maxFood = 0;
+
+bool shelter = false;
+bool fire = false;
+bool weapon = false;
+bool sos_Signal = false;
+
+bool boat_Hull = false;
+bool boat_Sail = false;
+bool boat_Jib = false;
+
+int playerChoice = 0;
+
+int main() {
+
+	health = 100;
+	maxHealth = 100;
+	energy = 100;
+	maxEnergy = 100;
+	food = 100;
+	maxFood = 100;
+	water = 100;
+	maxWater = 100;
+
+	
+	Intro();
+	HUD();
+	Choices();
+
+
+	switch (playerChoice) {
+	case 1:
+		if (shelter == true) {
+			cout << "Shelter already built";
+		}
+		else {
+			cout << "1. Shelter built." << endl << endl;
+
+			//change food, water, and energy levels. *Create constants for stat changes*
+			water = water - 20;
+			energy = energy - 20;
+			food = food - 20;
+			shelter = true;
+		}
+		break;
+
+	case 2:
+		if (fire == true) {
+			cout << "Fire already built";
+		}
+		else {
+			cout << "2. Fire built." << endl << endl;
+
+			//change food, water, and energy levels. *Create constants for stat changes*
+			water = water - 10;
+			energy = energy - 10;
+			food = food - 5;
+			fire = true;
+		}
+		break;
+
+	case 3:
+		if (weapon == true) {
+			cout << "Weapon already built";
+		}
+		else {
+			cout << "3. Weapon built." << endl << endl;
+
+			//change food, water, and energy levels. *Create constants for stat changes*
+			water = water - 10;
+			energy = energy - 10;
+			food = food - 5;
+			weapon = true;
+		}
+		break;
+
+	case 4:
+		cout << "4";
+		break;
+
+	case 5:
+		cout << "5";
+		break;
+
+	case 6:
+		cout << "6";
+		break;
+
+	case 7:
+		cout << "7";
+		break;
+
+	case 8:
+		cout << "8";
+		break;
+
+	case 9:
+		cout << "9";
+		break;
+
+	default:
+		cout << "Invalid";
+		break;
+
+	}
+
+	Sleep(2000);
+	system("cls");
+	HUD();
+
+	system("pause");
+	return 0;
+}
+
+//Introduction to the game
+void Intro() {
+
+	cout << "Enter character name: \n\n";
+	getline(cin, name);
+
+	system("cls");
+
+	cout << "Your name is " << name;
+	cout << "\n\n Backstory: ";
+
+	Sleep(2000);
+	system("cls");
+
+}
+
+//Displays the characters stats
+void HUD() {
+
+	cout << "Name: " << name << "\t\t Health: " << health << endl;
+	cout << "Food: " << food << endl;
+	cout << "Energy: " << energy << endl;
+	cout << "Water: " << water << endl << endl << endl;
+
+}
+
+//Displays the character's choices and gets input
+int Choices() {
+
+	cout << "1. Build shelter" << endl;
+	cout << "2. Build fire" << endl;
+	cout << "3. Build weapon" << endl;
+	cout << "4. Look for water" << endl;
+	cout << "5. Look for food" << endl;
+	cout << "6. Create SOS signal" << endl;
+	cout << "7. Salvage plane parts" << endl;
+	cout << "8. Build boat" << endl;
+	cout << "9. Escape!" << endl;
+	cout << "Enter Choice:	";
+
+	cin >> playerChoice;
+	cout << endl << endl;
+	
+	return playerChoice;
+
+}
