@@ -1,14 +1,17 @@
 #include <iostream>
 #include <windows.h>
 #include <string>
+#include <iomanip>
+
 using namespace std;
 
 //Function Declarations
 void Intro();
 void HUD();
 int Choices();
+int CheckHealth(int water, int energy, int food, int health, int& players_Alive);
 
-//Variable Declarations
+//Variable Declarations for name, food, health, energy and water
 string name;
 int health = 0;
 int maxHealth = 0;
@@ -19,19 +22,26 @@ int maxWater = 0;
 int food = 0;
 int maxFood = 0;
 
+//boolean declarations for shelter, fire, weapon and SOS signal
 bool shelter = false;
 bool fire = false;
 bool weapon = false;
 bool sos_Signal = false;
 
+//boolean declarations for boat parts
 bool boat_Hull = false;
 bool boat_Sail = false;
 bool boat_Jib = false;
 
+//while players_Alive is equal to 1, game will continue
+int players_Alive = 1;
+
+//variable for the players choice, initialized to 0
 int playerChoice = 0;
 
 int main() {
 
+	//initialize variables to starting value (100)
 	health = 100;
 	maxHealth = 100;
 	energy = 100;
@@ -41,104 +51,139 @@ int main() {
 	water = 100;
 	maxWater = 100;
 
-	
+	//Display the intro to the game
 	Intro();
-	HUD();
-	Choices();
+		
+	//Loop the HUD, Choices,
+	while (players_Alive == 1) {
+
+		HUD();
+		Choices();
 
 
-	switch (playerChoice) {
-	case 1:
-		if (shelter == true) {
-			cout << "Shelter already built";
+		switch (playerChoice) {
+
+			//Option one builds shelter
+		case 1:
+			if (shelter == true) {
+				cout << "Shelter already built";
+			}
+			else {
+				cout << "1. Shelter built." << endl << endl;
+
+				//change food, water, and energy levels. *Create constants for stat changes*
+				water = water - 50;
+				energy = energy - 20;
+				food = food - 20;
+				shelter = true;
+			}
+			break;
+
+			//Option two builds fire
+		case 2:
+			if (fire == true) {
+				cout << "Fire already built";
+			}
+			else {
+				cout << "2. Fire built." << endl << endl;
+
+				//change food, water, and energy levels. *Create constants for stat changes*
+				water = water - 50;
+				energy = energy - 10;
+				food = food - 5;
+				fire = true;
+			}
+			break;
+
+			//Option three builds weapon
+		case 3:
+			if (weapon == true) {
+				cout << "Weapon already built";
+			}
+			else {
+				cout << "3. Weapon built." << endl << endl;
+
+				//change food, water, and energy levels. *Create constants for stat changes*
+				water = water - 10;
+				energy = energy - 10;
+				food = food - 5;
+				weapon = true;
+			}
+			break;
+
+			//Option four looks for water
+		case 4:
+			cout << "4";
+			break;
+
+			//Option five looks for food
+		case 5:
+			cout << "5";
+			break;
+
+			//Option six creates SOS signal
+		case 6:
+			cout << "6";
+			break;
+
+			//Option seven salvages plane parts
+		case 7:
+			cout << "7";
+			break;
+
+			//Option eight builds boat
+		case 8:
+			cout << "8";
+			break;
+
+			//Option nine escapes island if boat is built
+		case 9:
+			cout << "9";
+			break;
+
+			//Display invalid choice if the player choice 
+			//entered isn't equal to or between 1-9
+		default:
+			cout << "Invalid choice!";
+			break;
+
 		}
-		else {
-			cout << "1. Shelter built." << endl << endl;
 
-			//change food, water, and energy levels. *Create constants for stat changes*
-			water = water - 20;
-			energy = energy - 20;
-			food = food - 20;
-			shelter = true;
+		//Checks health of player
+		CheckHealth(water, energy, food, health, players_Alive);
+
+		Sleep(3000);
+		system("cls");
+
+		//If the player is still alive and they have all boat parts
+		//assembled, they can escape the island and beat the game
+		if (players_Alive == 1 && boat_Hull == true && boat_Sail == true && boat_Jib == true) {
+			cout << "Escaped island congrats" << endl << endl;
+			players_Alive = 0;
 		}
-		break;
 
-	case 2:
-		if (fire == true) {
-			cout << "Fire already built";
+		//End the game if the player escapes island or doesn't survive
+		if (players_Alive == 0) {
+			cout << "Game over!" << endl << endl;
 		}
-		else {
-			cout << "2. Fire built." << endl << endl;
-
-			//change food, water, and energy levels. *Create constants for stat changes*
-			water = water - 10;
-			energy = energy - 10;
-			food = food - 5;
-			fire = true;
-		}
-		break;
-
-	case 3:
-		if (weapon == true) {
-			cout << "Weapon already built";
-		}
-		else {
-			cout << "3. Weapon built." << endl << endl;
-
-			//change food, water, and energy levels. *Create constants for stat changes*
-			water = water - 10;
-			energy = energy - 10;
-			food = food - 5;
-			weapon = true;
-		}
-		break;
-
-	case 4:
-		cout << "4";
-		break;
-
-	case 5:
-		cout << "5";
-		break;
-
-	case 6:
-		cout << "6";
-		break;
-
-	case 7:
-		cout << "7";
-		break;
-
-	case 8:
-		cout << "8";
-		break;
-
-	case 9:
-		cout << "9";
-		break;
-
-	default:
-		cout << "Invalid";
-		break;
 
 	}
 
-	Sleep(2000);
-	system("cls");
-	HUD();
-
-	system("pause");
-	return 0;
+		//End the program
+		system("pause");
+		return 0;
 }
 
 //Introduction to the game
 void Intro() {
 
+	//input character name
 	cout << "Enter character name: \n\n";
 	getline(cin, name);
 
 	system("cls");
 
+	//Display the backstory of how the player ended up stranded on the island
 	cout << "Your name is " << name;
 	cout << "\n\n Backstory: ";
 
@@ -160,20 +205,78 @@ void HUD() {
 //Displays the character's choices and gets input
 int Choices() {
 
-	cout << "1. Build shelter" << endl;
-	cout << "2. Build fire" << endl;
-	cout << "3. Build weapon" << endl;
-	cout << "4. Look for water" << endl;
-	cout << "5. Look for food" << endl;
-	cout << "6. Create SOS signal" << endl;
-	cout << "7. Salvage plane parts" << endl;
-	cout << "8. Build boat" << endl;
-	cout << "9. Escape!" << endl;
-	cout << "Enter Choice:	";
+		cout << "1. Build shelter" << endl;
+		cout << "2. Build fire" << endl;
+		cout << "3. Build weapon" << endl;
+		cout << "4. Look for water" << endl;
+		cout << "5. Look for food" << endl;
+		cout << "6. Create SOS signal" << endl;
+		cout << "7. Salvage plane parts" << endl;
+		cout << "8. Build boat" << endl;
+		cout << "9. Escape!" << endl;
+		cout << "Enter Choice:	";
 
-	cin >> playerChoice;
-	cout << endl << endl;
+		//input player choice, only accepts first integer entered for valid input
+		cin >> setw(1) >> playerChoice;
+
+		//invalid input check, making sure input is an integer
+		while (!cin.good()) {
+
+			//clear stream
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+
+			//gets input again until correct input is entered
+			cout << endl << endl << "Invalid option, pick again: ";
+			cin >> setw(1) >>  playerChoice;
+
+		}
 	
+	cout << endl << endl;
+
+	//clear stream
+	cin.clear();
+	cin.ignore(INT_MAX, '\n');
+
 	return playerChoice;
+
+}
+
+//Checks the health of the player
+int CheckHealth(int water, int energy, int food, int health, int& players_Alive) {
+
+	//checks players health. If health is less than or equal 
+	//to zero, players_Alive is set to zero which ends game
+	if (health <= 0) {
+		cout << "no health, ya dead";
+		players_Alive = 0;
+		Sleep(10000);
+	}
+
+	//checks water levels. If water is less than or equal 
+	//to zero, players_Alive is set to zero which ends game
+	else if (water <= 0) {
+		cout << "no water, ya dead";
+		players_Alive = 0;
+		Sleep(10000);
+	}
+
+	//checks energy levels. If water is less than or equal 
+	//to zero, players_Alive is set to zero which ends game
+	else if (energy <= 0) {
+		cout << "no energy, ya dead";
+		players_Alive = 0;
+		Sleep(10000);
+	}
+
+	//checks food levels. If water is less than or equal 
+	//to zero, players_Alive is set to zero which ends game
+	else if (food <= 0) {
+		cout << "no food, ya dead";
+		players_Alive = 0;
+		Sleep(10000);
+	}
+
+	return players_Alive;
 
 }
