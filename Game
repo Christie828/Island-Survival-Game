@@ -43,13 +43,14 @@ int main() {
 
 	//initialize variables to starting value (100)
 	health = 100;
-	maxHealth = 100;
 	energy = 100;
-	maxEnergy = 100;
 	food = 100;
-	maxFood = 100;
 	water = 100;
-	maxWater = 100;
+
+	const int maxHealth = 100;
+	const int maxWater = 100;
+	const int maxFood = 100;
+	const int maxEnergy = 100;
 
 	//Display the intro to the game
 	Intro();
@@ -113,17 +114,69 @@ int main() {
 
 			//Option four looks for water
 		case 4:
-			cout << "4";
+			cout << "Using a stream of fresh water not too far " << endl;
+			cout << "from your camp, you are able to rehydrate." << endl << endl;
+
+			//change food, water, and energy levels. *Create constants for stat changes*
+			water = water + 50;
+			energy = energy - 10;
+			food = food - 5;
+
+			//players water level cannot exceed max water level (100)
+			if (water > maxWater) {
+				water = maxWater;
+			}
 			break;
 
 			//Option five looks for food
 		case 5:
-			cout << "5";
+			cout << "Getting hungry, you decide to look for food";
+
+			if (weapon == true && fire == true) {
+				cout << "using the spear you made, you go fishing in the shallow waters " << endl;
+				cout << "of the sea. Although much harder than anticipated, you eventually " << endl;
+				cout << "spear a fishand cook it over the fire." << endl;
+
+				//change food, water, and energy levels.
+				food = food + 50;
+				energy = energy + 50;
+				water = water - 10;
+			}
+			else {
+				cout << "you go foraging on the island for some food. " << endl;
+				cout << "After a couple hours, you find some wild " << endl;
+				cout << "berries and various insects to hold your hunger over." << endl;
+
+				//change food, water, and energy levels.
+				food = food + 25;
+				energy = energy + 25;
+				water = water - 10;
+			}
+
+			//players food and energy levels cannot exceed max level (100)
+			if (food > maxFood) {
+				food = maxFood;
+			}
+			if (energy > maxEnergy) {
+				energy = maxEnergy;
+			}
+
 			break;
 
 			//Option six creates SOS signal
 		case 6:
-			cout << "6";
+			if (sos_Signal == true) {
+				cout << "SOS signal already built.";
+			}
+			else {
+				cout << "SOS signal built.";
+
+				//change food, water, and energy levels. 
+				water = water - 20;
+				energy = energy - 10;
+				food = food - 5;
+				sos_Signal = true;
+			}
 			break;
 
 			//Option seven salvages plane parts
@@ -133,12 +186,37 @@ int main() {
 
 			//Option eight builds boat
 		case 8:
-			cout << "8";
+
+			//Building the hull of the boat
+			if (boat_Hull == false) {
+				cout << "setting boat hull to true" << endl;
+				boat_Hull = true;
+			}
+			//Building the sails of the boat
+			else if (boat_Hull == true && boat_Sail == false) {
+				cout << "setting boat sails to true" << endl;
+				boat_Sail = true;
+			}
+			//Building the jin of the boat
+			else if (boat_Hull == true && boat_Sail == true && boat_Jib == false) {
+				cout << "setting boat jib to true" << endl;
+				boat_Jib = true;
+			}
+			//If the boat is fully assembled yet the player selects the build boat option
+			else if (boat_Hull == true && boat_Sail == true && boat_Jib == true) {
+				cout << "Boat's already assembled. Set sails and escape!";
+			}
 			break;
 
 			//Option nine escapes island if boat is built
 		case 9:
-			cout << "9";
+			if (players_Alive == 1 && boat_Hull == true && boat_Sail == true && boat_Jib == true) {
+				cout << "Escaped island congrats" << endl << endl;
+				players_Alive = 0;
+			}
+			else if (boat_Hull == false || boat_Sail == false || boat_Jib == false) {
+				cout << "Boat is not completed yet, can't sail of island.";
+			}
 			break;
 
 			//Display invalid choice if the player choice 
@@ -154,13 +232,6 @@ int main() {
 
 		Sleep(3000);
 		system("cls");
-
-		//If the player is still alive and they have all boat parts
-		//assembled, they can escape the island and beat the game
-		if (players_Alive == 1 && boat_Hull == true && boat_Sail == true && boat_Jib == true) {
-			cout << "Escaped island congrats" << endl << endl;
-			players_Alive = 0;
-		}
 
 		//End the game if the player escapes island or doesn't survive
 		if (players_Alive == 0) {
