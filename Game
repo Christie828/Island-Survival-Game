@@ -7,30 +7,31 @@
 
 using namespace std;
 
-//Function Declarations
+//Function Declarations. Descriptions of what tasks the 
+//functions perform are above the function definitions
 void Intro();
 void HUD();
 int Choices();
+
 void CheckDay(int& water, int& energy, int& food, int& health, int& day, int& hour, bool& players_Alive, bool fire, bool shelter);
 void CheckHealth(int water, int energy, int food, int health, bool& players_Alive);
 void AnimalEncounter(int& water, int& energy, int& food, int& health, bool& weapon);
+
 void BuildingBoat(int& water, int& energy, int& food, int& hour, bool& boat_Hull, bool& boat_Sail, bool& boat_Jib);
+void BuildFire(int& water, int& energy, int& food, int& hour, bool& fire);
+void BuildWeapon(int& water, int& energy, int& food, int& hour, bool& weapon);
+void BuildShelter(int& water, int& energy, int& food, int& hour, bool& shelter);
+
+void GetWater(int& water, int& energy, int& food, int& hour);
+void GetFood(int& water, int& energy, int& food, int& hour, bool& weapon, bool& fire);
+void EscapeIsland(bool& boat_Hull, bool& boat_Sail, bool& boat_Jib, bool& players_Alive);
 
 //Variable Declarations for name, food, health, energy and water and time
 string name;
-
 int health = 0;
-int maxHealth = 0;
-
 int energy = 0;
-int maxEnergy = 0;
-
 int water = 0;
-int maxWater = 0;
-
 int food = 0;
-int maxFood = 0;
-
 int day = 0;
 int hour = 0;
 
@@ -44,7 +45,7 @@ bool boat_Hull = false;
 bool boat_Sail = false;
 bool boat_Jib = false;
 
-//while players_Alive is equal to 1, game will continue
+//boolean declaration for players_Alive, set to true
 bool players_Alive = true;
 
 //variable for the players choice, initialized to 0
@@ -58,169 +59,60 @@ int main() {
 	food = 100;
 	water = 100;
 
-	//constants for max player stats, used to check to make sure players stats dont exceed 100
-	const int maxHealth = 100;
-	const int maxWater = 100;
-	const int maxFood = 100;
-	const int maxEnergy = 100;
-
 	//Display the intro to the game
 	Intro();
 
-	//Loop the HUD, Choices,
+	//while players_Alive is equal to true, game will continue
+	//looping the HUD, choices, case statements for player choice,
+	//checkHealth, and CheckDay functions
 	while (players_Alive == true) {
 
+		//Display the HUD and give player their choices
 		HUD();
 		Choices();
 
-
+		//Case statements for player choice that is entered
 		switch (playerChoice) {
 
-			//Option one builds shelter
+			//Option one builds the shelter
 		case 1:
-			if (shelter == true) {
-				cout << "Shelter already built";
-			}
-			else {
-				cout << "1. Shelter built." << endl << endl;
-
-				//change food, water, and energy levels. 
-				water = water - 20;
-				energy = energy - 20;
-				food = food - 10;
-				hour = hour + 6;
-				shelter = true;
-			}
+			BuildShelter(water, energy, food, hour, shelter);
 			break;
 
-			//Option two builds fire
+			//Option two builds the fire
 		case 2:
-			if (fire == true) {
-				cout << "Fire already built.";
-				Sleep(2000);
-			}
-			else {
-				cout << "To stay warm during the night and potentially cook some food," << endl;
-				Sleep(4000);
-				cout << "You gather wood from around the island to build a fire." << endl << endl;
-				Sleep(4000);
-				cout << "Using a technique you read about with sticks and friction," << endl;
-				Sleep(4000);
-				cout << "and several failed attempts later, you successfully build a fire!" << endl;
-				Sleep(5000);
-
-				//change food, water, and energy levels. 
-				water = water - 20;
-				energy = energy - 20;
-				food = food - 10;
-				hour = hour + 3;
-				fire = true;
-			}
+			BuildFire(water, energy, food, hour, fire);
 			break;
 
-			//Option three builds weapon
+			//Option three builds the weapon
 		case 3:
-			if (weapon == true) {
-				cout << "Weapon already built.";
-				Sleep(2000);
-			}
-			else {
-				cout << "Knowing there are dangerous animals on the island," << endl;
-				Sleep(4000);
-				cout << "you spend a couple hours crafting a spear." << endl << endl;
-				Sleep(4000);
-				cout << "Once finished, you feel safer walking around the island," << endl;
-				Sleep(4000);
-				cout << "and are now able to catch fish to cook over a fire." << endl;
-				Sleep(4000);
-				//change food, water, and energy levels. 
-				water = water - 10;
-				energy = energy - 10;
-				food = food - 5;
-				hour = hour + 3;
-				weapon = true;
-			}
+			BuildWeapon(water, energy, food, hour, weapon);
 			break;
 
 			//Option four looks for water
 		case 4:
-			cout << "Using a stream of fresh water not too far" << endl;
-			Sleep(3000);
-			cout << "from your camp, you are able to rehydrate." << endl << endl;
-			Sleep(3000);
+			GetWater(water, energy, food, hour);
 
-			//change food, water, and energy levels. 
-			water = water + 50;
-			energy = energy - 10;
-			food = food - 5;
-			hour = hour + 3;
-
-			//players water level cannot exceed max water level (100)
-			if (water > maxWater) {
-				water = maxWater;
-			}
 			//Chance for an animal encounter while walking back to camp
 			AnimalEncounter(water, energy, food, health, weapon);
 			break;
-
 
 			//Option five looks for food
 		case 5:
+			GetFood(water, energy, food, hour, weapon, fire);
 
-			if (weapon == true && fire == true) {
-				cout << "Using the spear you made, you go fishing in the shallow waters. " << endl;
-				Sleep(4000);
-				cout << "Although much harder than anticipated, you eventually spear a fish," << endl;
-				Sleep(4000);
-				cout << "ready to walk back to camp to cook it over the fire." << endl << endl;
-				Sleep(4000);
-
-				//change food, water, and energy levels.
-				food = food + 50;
-				energy = energy + 50;
-				water = water - 10;
-				hour = hour + 3;
-			}
-			else {
-				cout << "You go foraging on the island for some food. " << endl;
-				Sleep(3000);
-				cout << "After a couple hours, you find some wild berries" << endl;
-				Sleep(3000);
-				cout << "and various insects to hold your hunger over." << endl << endl;
-				Sleep(4000);
-
-				//change food, water, and energy levels.
-				food = food + 25;
-				energy = energy + 25;
-				water = water - 10;
-				hour = hour + 3;
-			}
-
-			//players food and energy levels cannot exceed max level (100)
-			if (food > maxFood) {
-				food = maxFood;
-			}
-			if (energy > maxEnergy) {
-				energy = maxEnergy;
-			}
 			//Chance for an animal encounter while walking back to camp
 			AnimalEncounter(water, energy, food, health, weapon);
 			break;
 
-			//Option six builds boat
+			//Option six builds the boat
 		case 6:
 			BuildingBoat(water, energy, food, hour, boat_Hull, boat_Sail, boat_Jib);
 			break;
 
 			//Option seven sails off island if boat is assembled
 		case 7:
-			if (players_Alive == true && boat_Hull == true && boat_Sail == true && boat_Jib == true) {
-				cout << "Escaped island congrats" << endl << endl;
-				players_Alive = 0;
-			}
-			else if (boat_Hull == false || boat_Sail == false || boat_Jib == false) {
-				cout << "Boat is not completed yet, can't sail of island.";
-			}
+			EscapeIsland(boat_Hull, boat_Sail, boat_Jib, players_Alive);
 			break;
 
 			//Display invalid choice if the player choice 
@@ -231,30 +123,31 @@ int main() {
 
 		}
 
-		//Checks health of player
+		//Each player choice affects the health stats of the player.
+		//Check the players health after a player choice is made
 		CheckHealth(water, energy, food, health, players_Alive);
 
-		//Passes in hours and days, as well as the players health stats. 
-		//If the day ends, player returns to camp to sleep and their health
-		//updates. Hours are reset and day counter is increased to one.
+		//Each player choice affects the time of day.
+		//Check the time of day after a player choice is made
 		CheckDay(water, energy, food, health, day, hour, players_Alive, fire, shelter);
 
 		Sleep(3000);
 		system("cls");
 
-		//End the game if the player escapes island or doesn't survive
+		//Setting players_Alive to false causes the while loop
+		//in main function to end, which ends the program
 		if (players_Alive == false) {
 			cout << "Game over!" << endl << endl;
 		}
 
 	}
 
-	//End the program
+	//End of program
 	system("pause");
 	return 0;
 }
 
-//Introduction to the game
+//Introduces the player to the game
 void Intro() {
 
 	//input character name
@@ -265,25 +158,33 @@ void Intro() {
 
 	//Display the backstory of how the player ended up stranded on the island
 	cout << "Your name is " << name;
-	cout << "\n\n Backstory: ";
-
-	Sleep(2000);
+	cout << "\n\nWorking as an operations executive at FedEx," << endl;
+	Sleep(5000);
+	cout << "you are scheduled for a business trip to Malaysia." << endl << endl;
+	Sleep(5000);
+	cout << "Experiencing technical difficulties, the plane crashes into the sea." << endl;
+	Sleep(5000);
+	cout << "Grabbing onto floating debris, you wash up onto the shore of a nearby deserted island." << endl;
+	Sleep(6000);
+	cout << "Realizing you are on your own, it is up to you to survive and make it back to civilization..." << endl;
+	Sleep(7000);
 	system("cls");
 
 }
 
-//Displays the characters stats
+//Displays the players stats to the very top of the program
 void HUD() {
 
 	cout << "Name: " << name << "\t\t Health: " << health << endl;
 	cout << "Food: " << food << endl;
 	cout << "Energy: " << energy << endl;
 	cout << "Water: " << water << endl;
-	cout << "Day:" << day << "\t \t Hour: " << hour << endl << endl;
+	cout << "Day:" << day << "\t \t Hour: " << hour << "/12" << endl << endl;
 
 }
 
-//Displays the character's choices and gets input
+//Displays the players possible choices and gets input,
+//returning the input to the case statements in main function.
 int Choices() {
 
 	cout << "1. Build shelter" << endl;
@@ -292,8 +193,9 @@ int Choices() {
 	cout << "4. Look for water" << endl;
 	cout << "5. Look for food" << endl;
 	cout << "6. Build boat" << endl;
-	cout << "7. Sail off island!" << endl;
-	cout << "Enter Choice:	";
+	cout << "7. Sail off island!" << endl << endl;
+	cout << "Type the number next to the option" << endl;
+	cout << "you wish to select and press Enter:	";
 
 	//input player choice, only accepts first integer entered for valid input
 	cin >> setw(1) >> playerChoice;
@@ -313,7 +215,6 @@ int Choices() {
 
 	cout << endl << endl;
 
-	//clear stream
 	cin.clear();
 	cin.ignore(INT_MAX, '\n');
 
@@ -323,33 +224,53 @@ int Choices() {
 
 //Checks the players stats. If health, water, energy, or food levels 
 //equal zero or below, display how character didn't survive
-//and set players_Alive to zero, ending game
+//and set players_Alive to false, ending the game.
 void CheckHealth(int water, int energy, int food, int health, bool& players_Alive) {
 
 	if (health <= 0) {
 		system("cls");
-		cout << "no health, ya dead";
+		cout << "As your health starts to diminish, you begin to feel sicker and sicker." << endl;
+		Sleep(5000);
+		cout << "At your camp, you are unable to carry on, passing away...";
+		Sleep(5000);
 		players_Alive = false;
 		Sleep(5000);
 	}
 
 	else if (water <= 0) {
 		system("cls");
-		cout << "no water, ya dead";
+		cout << "Feeling very dehydrated, you desperately attempt to get water at the stream." << endl;
+		Sleep(5000);
+		cout << "Dizzy and disoriented on the way, you collapse on the ground, passing away...";
+		Sleep(5000);
 		players_Alive = false;
 		Sleep(5000);
 	}
 
 	else if (energy <= 0) {
 		system("cls");
-		cout << "no energy, ya dead";
+		cout << "The lack of proper food leaves you feeling very fatigued." << endl;
+		Sleep(4000);
+		cout << "Desperate to find a proper meal, you begin to search the island." << endl;
+		Sleep(5000);
+		cout << "Not paying attention to your surroundings, you are struck by a venomous snake." << endl;
+		Sleep(5000);
+		cout << "Shortly after, you collapse on the ground, passing away...";
+		Sleep(5000);
 		players_Alive = false;
 		Sleep(5000);
 	}
 
 	else if (food <= 0) {
 		system("cls");
-		cout << "no food, ya dead";
+		cout << "The lack of proper food leaves you feeling very fatigued." << endl;
+		Sleep(4000);
+		cout << "Desperate to find a proper meal, you begin to search the island." << endl;
+		Sleep(5000);
+		cout << "Not paying attention to your surroundings, a wild boar attacks you." << endl;
+		Sleep(5000);
+		cout << "With very little energy, you are unable to defend yourself, passing away..." << endl;
+		Sleep(5000);
 		players_Alive = false;
 		Sleep(5000);
 	}
@@ -361,6 +282,10 @@ void CheckHealth(int water, int energy, int food, int health, bool& players_Aliv
 //updates. Hours are reset and day counter is increased to one.
 void CheckDay(int& water, int& energy, int& food, int& health, int& day, int& hour, bool& players_Alive, bool fire, bool shelter) {
 
+	//Player gains energy while sleeping. Local constant 
+	//is created so players energy doesn't exceed max level
+	const int maxEnergy = 100;
+
 	//only update if player is still alive and day ends (hours are >= 12)
 	if (players_Alive == true && hour >= 12) {
 		system("cls");
@@ -370,6 +295,7 @@ void CheckDay(int& water, int& energy, int& food, int& health, int& day, int& ho
 		day = day + 1;
 		hour = 0;
 
+		//update health and energy depending on if the player has a fire built
 		if (fire == true) {
 			cout << "With a fire built, you have an easier time staying warm during the night." << endl;
 			Sleep(5000);
@@ -382,6 +308,7 @@ void CheckDay(int& water, int& energy, int& food, int& health, int& day, int& ho
 			health = health - 2;
 			energy = energy + 5;
 		}
+		//update health and energy depending on if the player has a shelter built
 		if (shelter == true) {
 			cout << "Inside the shelter, you are able to fall asleep easier, getting much needed rest." << endl;
 			Sleep(6000);
@@ -394,11 +321,12 @@ void CheckDay(int& water, int& energy, int& food, int& health, int& day, int& ho
 			health = health - 2;
 			energy = energy + 10;
 		}
-		if (energy >= 100) {
-			energy = 100;
+		//Makes sure energy doesn't exceed max level
+		if (energy > maxEnergy) {
+			energy = maxEnergy;
 		}
 
-		//update health stats
+		//update water and food stats after sleeping
 		water = water - 10;
 		food = food - 5;
 
@@ -409,6 +337,8 @@ void CheckDay(int& water, int& energy, int& food, int& health, int& day, int& ho
 
 }
 
+//After looking for food and looking for water, AnimalEncounter function 
+//is called and player has the chance of an animal attack/encounter
 void AnimalEncounter(int& water, int& energy, int& food, int& health, bool& weapon) {
 
 	int encounterChance = 0, defendChance = 0, weaponBreakChance = 0;
@@ -419,8 +349,9 @@ void AnimalEncounter(int& water, int& energy, int& food, int& health, bool& weap
 	//Generate a chance of an animal attack
 	encounterChance = (rand() % 10);
 
+	//    1/2 chance of an animal encounter happening
 	if (encounterChance >= 5) {
-		cout << "While walking back to camp, you are attacked by a wild animal." << endl << endl;
+		cout << "While walking back to camp, you are attacked by a wild animal." << endl;
 		Sleep(5000);
 
 		//animal attack if the player has a weapon. Less likely to be injured
@@ -428,7 +359,7 @@ void AnimalEncounter(int& water, int& energy, int& food, int& health, bool& weap
 
 			defendChance = (rand() % 10);
 
-			//successfully defend animal attack
+			//successfully defend animal attack and change stats
 			if (defendChance >= 2) {
 				cout << "Using the spear you crafted earlier, you are able to defend and scare off the animal." << endl << endl;
 				Sleep(6000);
@@ -439,7 +370,7 @@ void AnimalEncounter(int& water, int& energy, int& food, int& health, bool& weap
 				//generate chance for weapon to break after attack
 				weaponBreakChance = (rand() % 10);
 
-				//weapon breaks after attck
+				//    1/5 chance of weapon breaking after attack 
 				if (weaponBreakChance >= 8) {
 					cout << "However, your weapon broke in the process." << endl << endl;
 					Sleep(4000);
@@ -491,7 +422,7 @@ void AnimalEncounter(int& water, int& energy, int& food, int& health, bool& weap
 
 }
 
-				
+//Builds the players boat. updating health stats and time, sets the boat part player hasn't built yet to true
 void BuildingBoat(int& water, int& energy, int& food, int& hour, bool& boat_Hull, bool& boat_Sail, bool& boat_Jib) {
 
 	//Building the hull of the boat
@@ -502,7 +433,7 @@ void BuildingBoat(int& water, int& energy, int& food, int& hour, bool& boat_Hull
 		Sleep(5000);
 		cout << "After a long day of gathering wood and fibres from palm trees," << endl;
 		Sleep(4000);
-		cout << "you string together the base of the boat, satisfied with the result." << endl;
+		cout << "you string together the hull of the boat, satisfied with the result." << endl;
 		Sleep(5000);
 		cout << "You plan to build sails next, but require some rest beforehand." << endl;
 		Sleep(4000);
@@ -516,8 +447,18 @@ void BuildingBoat(int& water, int& energy, int& food, int& hour, bool& boat_Hull
 	}
 	//Building the sails of the boat
 	else if (boat_Hull == true && boat_Sail == false) {
-		cout << "setting boat sails to true" << endl;
+		cout << "After building the hull of the boat, the next step is to construct the sails." << endl;
+		Sleep(5000);
+		cout << "After a couple hours of searching the island for the right materials," << endl;
+		Sleep(5000);
+		cout << "you find an old tarp, perfect to build sails with." << endl << endl;
 		Sleep(4000);
+		cout << "A few hours later, you manage to attach the tarp to" << endl;
+		Sleep(5000);
+		cout << "a large piece of driftwood and assemble it to the base of the boat." << endl;
+		Sleep(5000);
+		cout << "The last part to build is a rudder, but you need some rest beforehand." << endl;
+		Sleep(5000);
 		//change food, water, and energy levels. 
 		water = water - 40;
 		energy = energy - 40;
@@ -525,10 +466,18 @@ void BuildingBoat(int& water, int& energy, int& food, int& hour, bool& boat_Hull
 		hour = hour + 6;
 		boat_Sail = true;
 	}
-	//Building the jin of the boat
+	//Building the jib of the boat
 	else if (boat_Hull == true && boat_Sail == true && boat_Jib == false) {
-		cout << "setting boat jib to true" << endl;
+		cout << "Knowing you're close to finishing the boat and sailing off the island," << endl;
+		Sleep(5000);
+		cout << "you are motivated to build rudders in order to steer." << endl;
 		Sleep(4000);
+		cout << "You collect wood from around the island, and work on the design." << endl << endl;
+		Sleep(4000);
+		cout << "After a long process, you are now somewhat confident that this boat is sea worthy," << endl;
+		Sleep(6000);
+		cout << "ready to set sails off the island and get back home atlast." << endl;
+		Sleep(5000);
 		//change food, water, and energy levels. 
 		water = water - 40;
 		energy = energy - 40;
@@ -538,7 +487,187 @@ void BuildingBoat(int& water, int& energy, int& food, int& hour, bool& boat_Hull
 	}
 	//If the boat is fully assembled yet the player selects the build boat option
 	else if (boat_Hull == true && boat_Sail == true && boat_Jib == true) {
-		cout << "Boat's already assembled. Set sails and escape!";
+		cout << "Boat's already assembled. Set sails and get home!";
 	}
 
 }
+
+//Builds the players fire, updating health stats and time, sets fire to true
+void BuildFire(int& water, int& energy, int& food, int& hour, bool& fire) {
+	if (fire == true) {
+		cout << "Fire already built.";
+		Sleep(2000);
+	}
+	else {
+		cout << "To stay warm during the night and potentially cook some food," << endl;
+		Sleep(4000);
+		cout << "you gather wood from around the island to build a fire." << endl << endl;
+		Sleep(4000);
+		cout << "Using a technique you read about with sticks and friction," << endl;
+		Sleep(4000);
+		cout << "and several failed attempts later, you successfully build a fire!" << endl;
+		Sleep(5000);
+
+		//change food, water, and energy levels. 
+		water = water - 20;
+		energy = energy - 20;
+		food = food - 10;
+		hour = hour + 3;
+		fire = true;
+	}
+}
+
+//Builds the players weapon, updating health stats and time, sets weapon to true
+void BuildWeapon(int& water, int& energy, int& food, int& hour, bool& weapon) {
+
+	if (weapon == true) {
+		cout << "Weapon already built.";
+		Sleep(2000);
+	}
+	else {
+		cout << "Knowing there could be dangerous animals on the island," << endl;
+		Sleep(4000);
+		cout << "you spend a couple hours crafting a spear." << endl << endl;
+		Sleep(4000);
+		cout << "Once finished, you feel safer walking around the island," << endl;
+		Sleep(4000);
+		cout << "and are now able to catch fish to cook over a fire." << endl;
+		Sleep(4000);
+		//change food, water, and energy levels. 
+		water = water - 10;
+		energy = energy - 10;
+		food = food - 5;
+		hour = hour + 3;
+		weapon = true;
+	}
+
+}
+
+//player builds a shelter. Updates the players health stats and time, 
+//and sets shelter equal to true
+void BuildShelter(int& water, int& energy, int& food, int& hour, bool& shelter) {
+
+	if (shelter == true) {
+		cout << "Shelter already built";
+	}
+	else {
+		cout << "1. Knowing that a shelter is crucial to survival," << endl;
+		Sleep(4000);
+		cout << "you start collecting wood and other resources to build a shelter." << endl;
+		Sleep(5000);
+		cout << "After a long day of work, you manage to build a nice looking makeshift shelter." << endl;
+		Sleep(5000);
+
+		//change food, water, and energy levels. 
+		water = water - 20;
+		energy = energy - 20;
+		food = food - 10;
+		hour = hour + 6;
+		shelter = true;
+	}
+
+}
+
+//Player goes searching for water. updates players health and time of day
+void GetWater(int& water, int& energy, int& food, int& hour) {
+
+	const int maxWater = 100;
+
+	cout << "Using a stream of fresh water not too far" << endl;
+	Sleep(3000);
+	cout << "from your camp, you are able to rehydrate." << endl << endl;
+	Sleep(3000);
+
+	//change food, water, and energy levels. 
+	water = water + 50;
+	energy = energy - 10;
+	food = food - 5;
+	hour = hour + 3;
+
+	//players water level cannot exceed max water level (100)
+	if (water > maxWater) {
+		water = maxWater;
+	}
+}
+
+//Player goes searching for food. If they have a weapon and a fire, they can go fishing
+//updates the players health stats and changes time of day
+void GetFood(int& water, int& energy, int& food, int& hour, bool& weapon, bool& fire) {
+
+	const int maxEnergy = 100;
+	const int maxFood = 100;
+
+	if (weapon == true && fire == true) {
+		cout << "Using the spear you made, you go fishing in the shallow waters. " << endl;
+		Sleep(4000);
+		cout << "Although much harder than anticipated, you eventually spear a fish," << endl;
+		Sleep(4000);
+		cout << "ready to walk back to camp to cook it over the fire." << endl << endl;
+		Sleep(4000);
+
+		//change food, water, and energy levels.
+		food = food + 50;
+		energy = energy + 50;
+		water = water - 10;
+		hour = hour + 3;
+	}
+	else {
+		cout << "You go foraging on the island for some food. " << endl;
+		Sleep(3000);
+		cout << "After a couple hours, you find some wild berries" << endl;
+		Sleep(3000);
+		cout << "and various insects to hold your hunger over." << endl << endl;
+		Sleep(4000);
+
+		//change food, water, and energy levels.
+		food = food + 25;
+		energy = energy + 25;
+		water = water - 10;
+		hour = hour + 3;
+	}
+
+	//players food and energy levels cannot exceed max level (100)
+	if (food > maxFood) {
+		food = maxFood;
+	}
+	if (energy > maxEnergy) {
+		energy = maxEnergy;
+	}
+
+}
+
+//passes in boat parts and players_Alive. If player is still alive 
+//and all the boat parts are assembled, player escapes isalnd and beats game
+void EscapeIsland(bool& boat_Hull, bool& boat_Sail, bool& boat_Jib, bool& players_Alive) {
+
+	if (players_Alive == true && boat_Hull == true && boat_Sail == true && boat_Jib == true) {
+		system("cls");
+		cout << "With a fully completed boat, you are excited yet anxious" << endl;
+		Sleep(4000);
+		cout << "to escape the island, not knowing how it will hold up in the sea," << endl;
+		Sleep(5000);
+		cout << "or how far away you are from another landmass." << endl << endl;
+		Sleep(4000);
+		cout << "You push it out onto the sea and hop on, hoping for the best." << endl;
+		Sleep(5000);
+		cout << "There is a steady wind, so you decide to angle the sails" << endl;
+		Sleep(5000);
+		cout << "with the wind to travel faster. After what feels like an eternity of sailing," << endl << endl;
+		Sleep(6000);
+		cout << "it's beginning to get dark out. You scan the horizon, " << endl;
+		Sleep(5000);
+		cout << "and see a light in the distance! You immediately angle the sails " << endl;
+		Sleep(6000);
+		cout << "towards the light. Getting closer and closer, you realize that it's a city!" << endl << endl;
+		Sleep(6000);
+		cout << "With tears of joy, you know you've finally made it back to civilization." << endl;
+		Sleep(6000);
+		players_Alive = false;
+	}
+	else if (boat_Hull == false || boat_Sail == false || boat_Jib == false) {
+		cout << "Boat is not completed yet, can't sail of island.";
+	}
+
+}
+
+
